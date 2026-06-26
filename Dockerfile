@@ -1,8 +1,16 @@
-FROM python:3.9
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
-WORKDIR /code
-RUN pip install --no-cache-dir --upgrade pip
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir -r /code/requirements.txt
+FROM python:3.10-slim
+
+# Instalar FFmpeg y herramientas del sistema necesarias
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requisitos.txt .
+RUN pip install --no-cache-dir -r requisitos.txt
+
 COPY . .
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
+
+CMD ["uvicorn", "aplicación:app", "--host", "0.0.0.0", "--port", "7860"]
